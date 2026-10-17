@@ -60,14 +60,14 @@ function points(){
 $("count").onchange=buildPlayers;
 $("savePlayers").onclick=playersSave;
 $("editPlayers").onclick=()=>{stop();$("game").hidden=true;$("setup").hidden=false;$("count").value=String(agents.length);buildPlayers();[...document.querySelectorAll(".playerrow")].forEach((r,i)=>{r.querySelector("input[type=text]").value=agents[i].name;r.querySelector("input[type=number]").value=agents[i].age})};
-$("new").onclick=()=>{if(completed>=roundSize){$("status").textContent="🏆 Partida terminada. Pulsa Nueva partida.";return}newMission();if($("agent").value!=="team"&&agents.length>1){const ix=Number($("agent").value);$("agent").value=String((ix+1)%agents.length)}};
+$("new").onclick=()=>{if(completed>=roundSize){$("status").textContent="🏆 Partida terminada. Pulsa Nueva partida.";return}newMission()};
 $("agent").onchange=newMission;
 $("repeat").onclick=()=>{stop();left=total;render();$("status").textContent="¡Intentadlo otra vez!"};
 document.querySelectorAll("[data-seconds]").forEach(b=>b.onclick=()=>{setTime(Number(b.dataset.seconds));$("custom").value=""});
 $("custom").onchange=()=>{if($("custom").value)setTime(Math.max(10,Math.min(600,Number($("custom").value)||60)))};
 $("start").onclick=()=>{if(mode!=="idle")return;mode="running";deadline=performance.now()+left*1000;timer=setInterval(tick,100);$("start").disabled=true;$("win").disabled=false;$("pause").disabled=false;$("status").textContent="🚀 ¡Misión en marcha!";sound(700)};
 $("pause").onclick=()=>{if(mode==="running"){left=Math.max(0,(deadline-performance.now())/1000);clearInterval(timer);mode="paused";$("pause").textContent="▶ CONTINUAR";$("status").textContent="⏸ En pausa"}else if(mode==="paused"){mode="running";deadline=performance.now()+left*1000;timer=setInterval(tick,100);$("pause").textContent="⏸ PAUSAR";$("status").textContent="🚀 ¡Adelante!"}};
-$("win").onclick=()=>{if(mode==="idle")return;stop();score+=100;completed=Math.min(roundSize,completed+1);points();$("status").textContent="✅ ¡Desactivada! +100 puntos";sound(980,.24);buzz();party()};
+$("win").onclick=()=>{if(mode==="idle")return;stop();score+=100;completed=Math.min(roundSize,completed+1);points();$("status").textContent="✅ ¡Desactivada! +100 puntos";sound(980,.24);buzz();party();if(agents.length>1&&$("agent").value!=="team"){$("agent").value=String((Number($("agent").value)+1)%agents.length)} };
 $("reset").onclick=()=>{stop();left=total;render();$("status").textContent="Dispositivo reiniciado"};
 $("undo").onclick=()=>{score=Math.max(0,score-100);completed=Math.max(0,completed-1);points()};
 $("clear").onclick=()=>{if(confirm("¿Comenzar una partida nueva?")){score=0;completed=0;used.clear();points();stop();left=total;render();if(agents.length){$("agent").value="0";newMission()}}};
